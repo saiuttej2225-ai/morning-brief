@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Morning Brief: news for your job title</title>
+<style>
+:root{--ink:#14213d;--accent:#2563eb;--bg:#f6f7fb}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:640px;margin:0 auto;padding:32px 20px 60px}
+h1{font-size:30px;margin:0 0 8px}p.lead{font-size:17px;line-height:1.5;color:#44506b;margin:0 0 24px}
+form{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(20,33,61,.08)}
+label.f{display:block;font-weight:600;margin:16px 0 6px}
+input[type=text],input[type=email]{width:100%;padding:11px 12px;border:1px solid #cbd2e1;border-radius:8px;font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip input{display:none}
+.chip span{display:inline-block;padding:8px 13px;border:1px solid #cbd2e1;border-radius:999px;cursor:pointer;font-size:14px;background:#fff}
+.chip input:checked+span{background:var(--accent);color:#fff;border-color:var(--accent)}
+.radios{display:flex;gap:18px;margin-top:6px}
+button{margin-top:22px;width:100%;padding:13px;border:0;border-radius:9px;background:var(--accent);color:#fff;font-size:17px;font-weight:600;cursor:pointer}
+.small{font-size:13px;color:#667;margin-top:14px;line-height:1.45}
+#done{display:none;background:#e8f7ee;border:1px solid #9bd5b0;border-radius:12px;padding:20px;margin-top:16px;font-size:16px}
+</style></head><body><main>
+<h1>Morning Brief</h1>
+<p class="lead">Tell us your job title and the topics you care about. Every morning you get a short email with the news that matters to you, and each story is labeled so you know how well it is confirmed.</p>
+<form id="f" action="https://docs.google.com/forms/d/e/1FAIpQLSc3eJNqzdBS8SQ48b4evId-FtWco3Ukrt9yJTBDBNZS2FidCw/formResponse" method="POST" target="hidden_iframe">
+<label class="f" for="n">Your name</label><input id="n" type="text" name="entry.1439940062" required>
+<label class="f" for="e">Email</label><input id="e" type="email" name="entry.1633401173" required>
+<label class="f" for="j">Job title (for example: AI Product Manager, Data Analyst, Nurse Practitioner)</label><input id="j" type="text" name="entry.837442046" required>
+<label class="f">Topics (pick at least one)</label>
+<div class="chips">
+<label class="chip"><input type="checkbox" name="entry.215467201" value="AI models &amp; research"><span>AI models &amp; research</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="New AI tools &amp; launches"><span>New AI tools &amp; launches</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="AI industry &amp; policy"><span>AI industry &amp; policy</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Product management"><span>Product management</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Data &amp; analytics"><span>Data &amp; analytics</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Software engineering"><span>Software engineering</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Cybersecurity"><span>Cybersecurity</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Startups &amp; funding"><span>Startups &amp; funding</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Careers &amp; hiring"><span>Careers &amp; hiring</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Finance &amp; markets"><span>Finance &amp; markets</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Healthcare &amp; biotech"><span>Healthcare &amp; biotech</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Design &amp; UX"><span>Design &amp; UX</span></label>
+<label class="chip"><input type="checkbox" name="entry.215467201" value="Marketing &amp; growth"><span>Marketing &amp; growth</span></label>
+</div>
+<label class="f" for="o">Something else you want to follow? (optional)</label>
+<input id="o" type="text" placeholder="e.g. electric vehicles, climate tech">
+<label class="f">What would you like to do?</label>
+<div class="radios"><label><input type="radio" name="entry.550842570" value="Subscribe" checked> Subscribe</label>
+<label><input type="radio" name="entry.550842570" value="Unsubscribe"> Unsubscribe</label></div>
+<button type="submit">Send me the brief</button>
+<p class="small">Use the same form again any time to change your title or topics (your newest answer replaces the old one) or to unsubscribe. Your email is stored privately and used only to send the brief.</p>
+</form>
+<div id="done">You are in. Your first brief arrives with the next morning run. Check your spam folder once and mark it as not spam.</div>
+<iframe name="hidden_iframe" style="display:none"></iframe>
+</main>
+<script>
+const f=document.getElementById('f'),done=document.getElementById('done');
+f.addEventListener('submit',function(ev){
+  const picked=f.querySelectorAll('input[name="entry.215467201"]:checked');
+  const other=document.getElementById('o').value.trim();
+  if(picked.length===0&&!other){ev.preventDefault();alert('Please pick at least one topic.');return;}
+  // free-text topic goes into the form's "Other" option
+  f.querySelectorAll('.dyn').forEach(x=>x.remove());
+  if(other){
+    for(const [k,v] of [['entry.215467201','__other_option__'],['entry.215467201.other_option_response',other]]){
+      const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;i.className='dyn';f.appendChild(i);}
+  }
+  setTimeout(()=>{f.style.display='none';done.style.display='block';},700);
+});
+</script></body></html>
