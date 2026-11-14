@@ -211,20 +211,24 @@ def candidates_for(sub, pool, since, now, official, sent_urls):
 
 
 def fact_check(cands):
+    """Label each story. Only outlets whose headline matches the SAME story count (see verify.same_story)."""
     def one(c):
         try:
             r = verify.outlets(re.sub(r"[\"']", "", c["title"])[:110], 3)
-            c["outlets"] = r["independent_outlets"]
+            m = verify.same_story(c["title"], r["all_headlines"], own_outlet=c["source"])
+            c["outlets"], c["outlet_names"], c["rumor"] = m["outlets"], m["names"], m["rumor_wording"]
         except Exception:
-            c["outlets"] = 0
+            c["outlets"], c["outlet_names"], c["rumor"] = 0, [], False
         return c
     with ThreadPoolExecutor(max_workers=5) as ex:
         list(ex.map(one, cands))
     for c in cands:
         if c["official"]:
             c["label"] = "Official"
-        elif c["outlets"] >= 2:
+        elif c["outlets"] >= 2 and not c["rumor"]:
             c["label"] = "Confirmed (%d outlets)" % c["outlets"]
+        elif c["outlets"] >= 2:
+            c["label"] = "Reported, not confirmed (%d outlets, rumor wording)" % c["outlets"]
         else:
             c["label"] = "Single source"
     return cands
@@ -289,7 +293,7 @@ def write_brief(sub, cands):
 
 
 # ---------------------------------------------------------------- email
-BADGE = {"Official": "#0b6b3a", "Single": "#8a5a00", "Confirmed": "#1a56b0"}
+BADGE = {"Official": "#0b6b3a", "Single": "#8a5a00", "Confirmed": "#1a56b0", "Reported,": "#8a5a00"}
 
 
 def render(sub, intro, picks, today):
@@ -312,7 +316,7 @@ def render(sub, intro, picks, today):
         '<div style="color:#777;font-size:13px;margin-bottom:12px">%s &middot; %s</div>'
         '<p style="font-size:14px">%s</p><table width="100%%" cellspacing="0" cellpadding="0">%s</table>'
         '<p style="font-size:12px;color:#888;margin-top:20px">Labels: Official = from the company itself. Confirmed = 2+ independent outlets in the last 3 days. '
-        'Single source = only one outlet found, treat with care.<br>%s</p></div>'
+        'Single source = only one outlet found. Reported, not confirmed = several outlets repeat a rumor or leak.<br>%s</p></div>'
         % (e(today), e(sub["job"] or "General"), e(intro), "".join(rows), manage))
 
 
