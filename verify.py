@@ -34,7 +34,41 @@ def outlets(query, days):
         if name:
             names.setdefault(name, site)
     return {"query": query, "days": days, "independent_outlets": len(names),
-            "outlets": list(names)[:25], "headlines": rows[:12]}
+            "outlets": list(names)[:25], "headlines": rows[:12], "all_headlines": rows}
+
+
+STOP = set("the and for with from that this are was were has have had its into over after about will new says say how why what who your you our out not but can could would more than just they their them been being also amid per via".split())
+RUMOR = re.compile(r"\b(rumou?rs?|leak(s|ed)?|reportedly|allegedly|unconfirmed|said to|sources? say|insiders?|speculat\w*)\b", re.I)
+
+
+def _toks(s):
+    return set(w for w in re.findall(r"[a-z0-9][a-z0-9.+-]*", s.lower()) if len(w) > 2 and w not in STOP)
+
+
+def same_story(query, headlines, own_outlet="", min_shared=3, min_ratio=0.5):
+    """Count outlets whose headline covers the SAME story as `query`.
+
+    A headline counts only if it shares at least `min_shared` distinctive words with the query
+    and at least `min_ratio` of the shorter headline's words. Outlets are de-duplicated by name.
+    Returns matching outlet names, and whether any headline uses rumor wording."""
+    q = _toks(re.sub(r" - [^-]{2,40}$", "", query))
+    matched, rumor = {}, bool(RUMOR.search(query))
+    for h in headlines:
+        title = re.sub(r" - [^-]{2,40}$", "", h["title"])
+        t = _toks(title)
+        if not q or not t:
+            continue
+        shared = len(q & t)
+        if shared >= min(min_shared, len(q)) and shared / min(len(q), len(t)) >= min_ratio:
+            name = (h.get("outlet") or "").strip().lower()
+            if name and name not in matched:
+                matched[name] = h["outlet"]
+            if RUMOR.search(title):
+                rumor = True
+    names = list(matched.values())
+    if own_outlet and own_outlet.strip().lower() not in matched:
+        names.append(own_outlet)  # the original source counts as one outlet
+    return {"outlets": len(names), "names": names[:15], "rumor_wording": rumor}
 
 
 def check_url(u):
