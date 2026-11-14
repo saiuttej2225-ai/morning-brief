@@ -1,6 +1,6 @@
-# Build log: how this project was made (interview walkthrough)
+# How this project was built
 
-Each step says what was done, how, and why. Use it to explain the project in your own words.
+Each step says what was done, how, and why.
 
 ## The idea
 A free service that emails each person a daily news brief tailored to their **job title** and **topics**. Runs on GitHub Actions (free), no server to maintain.
@@ -68,18 +68,13 @@ Why: GitHub Pages is static, so it can't store signups safely. A Form gives free
 - Signed up through the public page as a real user (AI Product Manager, 4 topics + free-text "AI evals"). Checked the row arrived in the Sheet.
 - Actions tab -> Daily brief -> Run workflow. Run #1 finished green in 56 seconds and the email arrived with 10 labeled stories and a Gemini-written intro and summaries.
 
-## Known limits (good to say honestly)
-- "Confirmed (N outlets)" counts Google News results for the headline. Broad topical headlines can match loosely, so N can be inflated. A stricter same-claim check is the next improvement.
-- Gmail app passwords cap sending (about 500 emails a day), so this suits tens to low hundreds of subscribers.
-- Gemini free tier has rate limits; the runner waits and retries, and falls back to plain snippets.
-
-## What to say in an interview
-- Problem: busy people want news for their exact job, but trust is a problem with AI-written news.
-- Solution: automated pipeline with a fact-check label on every story (official / 2+ outlets / single source), personalised by job title and topics.
-- Engineering choices: zero-cost stack (Actions, Pages, Forms/Sheets, Gemini free tier), no servers, standard-library Python, secrets management, privacy (hashed IDs, private signup sheet), graceful fallback when the AI is down, dry-run testing.
-
 ## Step 12. Tightening the "Confirmed" label
 - Problem: the first version counted every Google News result for a headline, so a broad topical headline showed "Confirmed (10 outlets)" without 10 outlets reporting the same event.
-- Fix (`verify.same_story`): a headline counts only if it shares at least 3 distinctive words and at least half of the shorter headline's words with the story, outlets are de-duplicated by name, and the original source counts as one.
+- Fix (`verify.same_story`): a headline counts only if it shares at least 3 distinctive words and at least half of the shorter headline's words with the story. Outlets are de-duplicated by name, and the original source counts as one.
 - Echo-rumor guard: if the headline uses rumor wording (leak, reportedly, allegedly, sources say...), 2+ outlets earn "Reported, not confirmed" instead of "Confirmed". Many outlets repeating one leak is still not confirmation.
 - Result on real examples: a loose topical story went from 11 outlets to 2; a widely covered model launch stayed at 18.
+
+## Known limits
+- Same-story matching is a headline-word heuristic, not full understanding of the claim, so it can still miss or over-match in edge cases.
+- Gmail app passwords cap sending (about 500 emails a day), so this suits tens to low hundreds of subscribers.
+- Gemini free tier has rate limits; the runner waits and retries, and falls back to plain snippets.
