@@ -77,3 +77,9 @@ Why: GitHub Pages is static, so it can't store signups safely. A Form gives free
 - Problem: busy people want news for their exact job, but trust is a problem with AI-written news.
 - Solution: automated pipeline with a fact-check label on every story (official / 2+ outlets / single source), personalised by job title and topics.
 - Engineering choices: zero-cost stack (Actions, Pages, Forms/Sheets, Gemini free tier), no servers, standard-library Python, secrets management, privacy (hashed IDs, private signup sheet), graceful fallback when the AI is down, dry-run testing.
+
+## Step 12. Tightening the "Confirmed" label
+- Problem: the first version counted every Google News result for a headline, so a broad topical headline showed "Confirmed (10 outlets)" without 10 outlets reporting the same event.
+- Fix (`verify.same_story`): a headline counts only if it shares at least 3 distinctive words and at least half of the shorter headline's words with the story, outlets are de-duplicated by name, and the original source counts as one.
+- Echo-rumor guard: if the headline uses rumor wording (leak, reportedly, allegedly, sources say...), 2+ outlets earn "Reported, not confirmed" instead of "Confirmed". Many outlets repeating one leak is still not confirmation.
+- Result on real examples: a loose topical story went from 11 outlets to 2; a widely covered model launch stayed at 18.
