@@ -50,3 +50,30 @@ Why: GitHub Pages is static, so it can't store signups safely. A Form gives free
 
 ## Step 7. GitHub repo
 - Repository with the code, the workflow and this log. Secrets go in Settings -> Secrets and variables -> Actions: `GEMINI_API_KEY`, `GMAIL_ADDRESS`, `GMAIL_APP_PASSWORD`, `SUBSCRIBERS_CSV_URL`. Variable `SITE_URL` = the Pages address (used for the unsubscribe link in each email).
+
+## Step 8. Put the code on GitHub
+- Created the public repo `morning-brief`, then added files through GitHub's web editor and upload page (README by paste, 7 files by upload, workflow and state file by paste because they live in hidden/sub folders).
+- Verified every file by comparing a hash of the copy on GitHub with the local copy: all identical.
+
+## Step 9. Turn on the website
+- Settings -> Pages -> Source "Deploy from a branch" -> branch `main`, folder `/docs` -> Save. The signup page went live at https://saiuttej2225-ai.github.io/morning-brief/ (checked: HTTP 200).
+
+## Step 10. Secrets and variables (never put keys in code)
+- Settings -> Secrets and variables -> Actions.
+- Secrets: `SUBSCRIBERS_CSV_URL` (the published sheet link), `GMAIL_ADDRESS`, `GEMINI_API_KEY`, `GMAIL_APP_PASSWORD`.
+- Variable: `SITE_URL` (used for the "change topics / unsubscribe" link in every email).
+- Why secrets: they are encrypted, hidden in logs, and only the workflow can read them. The repo is public, so keys in code would be stolen within minutes.
+
+## Step 11. First real test (passed)
+- Signed up through the public page as a real user (AI Product Manager, 4 topics + free-text "AI evals"). Checked the row arrived in the Sheet.
+- Actions tab -> Daily brief -> Run workflow. Run #1 finished green in 56 seconds and the email arrived with 10 labeled stories and a Gemini-written intro and summaries.
+
+## Known limits (good to say honestly)
+- "Confirmed (N outlets)" counts Google News results for the headline. Broad topical headlines can match loosely, so N can be inflated. A stricter same-claim check is the next improvement.
+- Gmail app passwords cap sending (about 500 emails a day), so this suits tens to low hundreds of subscribers.
+- Gemini free tier has rate limits; the runner waits and retries, and falls back to plain snippets.
+
+## What to say in an interview
+- Problem: busy people want news for their exact job, but trust is a problem with AI-written news.
+- Solution: automated pipeline with a fact-check label on every story (official / 2+ outlets / single source), personalised by job title and topics.
+- Engineering choices: zero-cost stack (Actions, Pages, Forms/Sheets, Gemini free tier), no servers, standard-library Python, secrets management, privacy (hashed IDs, private signup sheet), graceful fallback when the AI is down, dry-run testing.
