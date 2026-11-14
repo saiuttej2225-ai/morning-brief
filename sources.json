@@ -1,0 +1,41 @@
+{
+  "_note": "Feeds the collector reads every morning. type = official | news | pm | data | launches | community | analysis. All were tested working on 2026-11-11. Add or remove freely.",
+  "feeds": [
+    {"name": "OpenAI News", "url": "https://openai.com/news/rss.xml", "type": "official"},
+    {"name": "Google AI Blog", "url": "https://blog.google/technology/ai/rss/", "type": "official"},
+    {"name": "Google DeepMind", "url": "https://deepmind.google/blog/rss.xml", "type": "official"},
+    {"name": "Hugging Face Blog", "url": "https://huggingface.co/blog/feed.xml", "type": "official"},
+    {"name": "AWS Machine Learning Blog", "url": "https://aws.amazon.com/blogs/machine-learning/feed/", "type": "official"},
+    {"name": "GitHub Blog", "url": "https://github.blog/feed/", "type": "official"},
+    {"name": "TechCrunch AI", "url": "https://techcrunch.com/category/artificial-intelligence/feed/", "type": "news"},
+    {"name": "The Verge AI", "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", "type": "news"},
+    {"name": "Ars Technica AI", "url": "https://arstechnica.com/ai/feed/", "type": "news"},
+    {"name": "Wired AI", "url": "https://www.wired.com/feed/tag/ai/latest/rss", "type": "news"},
+    {"name": "MIT Technology Review AI", "url": "https://www.technologyreview.com/topic/artificial-intelligence/feed", "type": "news"},
+    {"name": "The Decoder", "url": "https://the-decoder.com/feed/", "type": "news"},
+    {"name": "MIT News AI", "url": "https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml", "type": "news"},
+    {"name": "Product Hunt", "url": "https://www.producthunt.com/feed", "type": "launches"},
+    {"name": "Hacker News (150+ points)", "url": "https://hnrss.org/frontpage?points=150", "type": "community"},
+    {"name": "Lenny's Newsletter", "url": "https://www.lennysnewsletter.com/feed", "type": "pm"},
+    {"name": "SVPG (Marty Cagan)", "url": "https://www.svpg.com/feed/", "type": "pm"},
+    {"name": "The Product Compass", "url": "https://www.productcompass.pm/feed", "type": "pm"},
+    {"name": "Product Growth (Aakash Gupta)", "url": "https://www.news.aakashg.com/feed", "type": "pm"},
+    {"name": "Product Coalition", "url": "https://productcoalition.com/feed", "type": "pm"},
+    {"name": "Ben's Bites", "url": "https://www.bensbites.com/feed", "type": "analysis"},
+    {"name": "One Useful Thing (Ethan Mollick)", "url": "https://www.oneusefulthing.org/feed", "type": "analysis"},
+    {"name": "Latent Space", "url": "https://www.latent.space/feed", "type": "analysis"},
+    {"name": "Simon Willison", "url": "https://simonwillison.net/atom/everything/", "type": "analysis"},
+    {"name": "The Pragmatic Engineer", "url": "https://newsletter.pragmaticengineer.com/feed", "type": "analysis"},
+    {"name": "Towards Data Science", "url": "https://towardsdatascience.com/feed", "type": "data"},
+    {"name": "benn.substack (data)", "url": "https://benn.substack.com/feed", "type": "data"}
+  ],
+  "hn_queries": ["AI", "LLM", "OpenAI", "Anthropic", "Gemini", "agent", "product manager", "analytics", "SQL"],
+  "hn_min_points": 80,
+  "official_domains": [
+    "openai.com", "anthropic.com", "blog.google", "deepmind.google", "ai.google.dev", "googleblog.com", "huggingface.co",
+    "aws.amazon.com", "aboutamazon.com", "github.blog", "microsoft.com", "meta.com", "about.fb.com", "apple.com",
+    "nvidia.com", "mistral.ai", "x.ai", "deepseek.com", "qwenlm.github.io", "perplexity.ai", "notion.com", "figma.com",
+    "cursor.com", "salesforce.com", "databricks.com", "snowflake.com", "tableau.com", "powerbi.microsoft.com", "dbt.com",
+    "europa.eu", "whitehouse.gov", "nist.gov", "ftc.gov"
+  ]
+}
