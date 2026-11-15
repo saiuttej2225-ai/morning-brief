@@ -23,24 +23,36 @@ button{margin-top:22px;width:100%;padding:13px;border:0;border-radius:9px;backgr
 <label class="f" for="n">Your name</label><input id="n" type="text" name="entry.1439940062" required>
 <label class="f" for="e">Email</label><input id="e" type="email" name="entry.1633401173" required>
 <label class="f" for="j">Job title (for example: AI Product Manager, Data Analyst, Nurse Practitioner)</label><input id="j" type="text" name="entry.837442046" required>
-<label class="f">Topics (pick at least one)</label>
+<label class="f">Topics (pick any, type your own, or both)</label>
 <div class="chips">
-<label class="chip"><input type="checkbox" name="entry.215467201" value="AI models &amp; research"><span>AI models &amp; research</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="New AI tools &amp; launches"><span>New AI tools &amp; launches</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="AI industry &amp; policy"><span>AI industry &amp; policy</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Product management"><span>Product management</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Data &amp; analytics"><span>Data &amp; analytics</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Software engineering"><span>Software engineering</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Cybersecurity"><span>Cybersecurity</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Startups &amp; funding"><span>Startups &amp; funding</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Careers &amp; hiring"><span>Careers &amp; hiring</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Finance &amp; markets"><span>Finance &amp; markets</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Healthcare &amp; biotech"><span>Healthcare &amp; biotech</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Design &amp; UX"><span>Design &amp; UX</span></label>
-<label class="chip"><input type="checkbox" name="entry.215467201" value="Marketing &amp; growth"><span>Marketing &amp; growth</span></label>
+<label class="chip"><input type="checkbox" value="AI models &amp; research"><span>AI models &amp; research</span></label>
+<label class="chip"><input type="checkbox" value="New AI tools &amp; launches"><span>New AI tools &amp; launches</span></label>
+<label class="chip"><input type="checkbox" value="AI industry &amp; policy"><span>AI industry &amp; policy</span></label>
+<label class="chip"><input type="checkbox" value="Product management"><span>Product management</span></label>
+<label class="chip"><input type="checkbox" value="Data &amp; analytics"><span>Data &amp; analytics</span></label>
+<label class="chip"><input type="checkbox" value="Software engineering"><span>Software engineering</span></label>
+<label class="chip"><input type="checkbox" value="Cybersecurity"><span>Cybersecurity</span></label>
+<label class="chip"><input type="checkbox" value="Startups &amp; funding"><span>Startups &amp; funding</span></label>
+<label class="chip"><input type="checkbox" value="Careers &amp; hiring"><span>Careers &amp; hiring</span></label>
+<label class="chip"><input type="checkbox" value="Finance &amp; markets"><span>Finance &amp; markets</span></label>
+<label class="chip"><input type="checkbox" value="Healthcare &amp; biotech"><span>Healthcare &amp; biotech</span></label>
+<label class="chip"><input type="checkbox" value="Design &amp; UX"><span>Design &amp; UX</span></label>
+<label class="chip"><input type="checkbox" value="Marketing &amp; growth"><span>Marketing &amp; growth</span></label>
+<label class="chip"><input type="checkbox" value="Sports"><span>Sports</span></label>
+<label class="chip"><input type="checkbox" value="Entertainment &amp; movies"><span>Entertainment &amp; movies</span></label>
+<label class="chip"><input type="checkbox" value="Travel"><span>Travel</span></label>
+<label class="chip"><input type="checkbox" value="Food &amp; cooking"><span>Food &amp; cooking</span></label>
+<label class="chip"><input type="checkbox" value="Science &amp; space"><span>Science &amp; space</span></label>
+<label class="chip"><input type="checkbox" value="World news &amp; politics"><span>World news &amp; politics</span></label>
+<label class="chip"><input type="checkbox" value="Health &amp; fitness"><span>Health &amp; fitness</span></label>
+<label class="chip"><input type="checkbox" value="Education"><span>Education</span></label>
+<label class="chip"><input type="checkbox" value="Real estate"><span>Real estate</span></label>
+<label class="chip"><input type="checkbox" value="Climate &amp; environment"><span>Climate &amp; environment</span></label>
+<label class="chip"><input type="checkbox" value="Automotive &amp; EVs"><span>Automotive &amp; EVs</span></label>
+<label class="chip"><input type="checkbox" value="Gaming"><span>Gaming</span></label>
 </div>
-<label class="f" for="o">Something else you want to follow? (optional)</label>
-<input id="o" type="text" placeholder="e.g. electric vehicles, climate tech">
+<label class="f" for="o">Type your own topics (anything at all, separate with commas)</label>
+<input id="o" type="text" placeholder="e.g. cricket, QA testing, home gardening">
 <label class="f">What would you like to do?</label>
 <div class="radios"><label><input type="radio" name="entry.550842570" value="Subscribe" checked> Subscribe</label>
 <label><input type="radio" name="entry.550842570" value="Unsubscribe"> Unsubscribe</label></div>
@@ -53,15 +65,14 @@ button{margin-top:22px;width:100%;padding:13px;border:0;border-radius:9px;backgr
 <script>
 const f=document.getElementById('f'),done=document.getElementById('done');
 f.addEventListener('submit',function(ev){
-  const picked=f.querySelectorAll('input[name="entry.215467201"]:checked');
-  const other=document.getElementById('o').value.trim();
-  if(picked.length===0&&!other){ev.preventDefault();alert('Please pick at least one topic.');return;}
-  // free-text topic goes into the form's "Other" option
+  const picked=[...f.querySelectorAll('.chips input:checked')].map(x=>x.value);
+  const typed=document.getElementById('o').value.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);
+  const all=picked.concat(typed);
+  if(all.length===0){ev.preventDefault();alert('Please pick a topic or type your own.');return;}
+  // Everything goes into the Form\'s "Other" answer as one comma-separated list, so any topic is accepted.
   f.querySelectorAll('.dyn').forEach(x=>x.remove());
-  if(other){
-    for(const [k,v] of [['entry.215467201','__other_option__'],['entry.215467201.other_option_response',other]]){
-      const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;i.className='dyn';f.appendChild(i);}
-  }
+  for(const [k,v] of [['entry.215467201','__other_option__'],['entry.215467201.other_option_response',all.join(', ')]]){
+    const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;i.className='dyn';f.appendChild(i);}
   setTimeout(()=>{f.style.display='none';done.style.display='block';},700);
 });
 </script></body></html>
