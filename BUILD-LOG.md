@@ -74,6 +74,15 @@ Why: GitHub Pages is static, so it can't store signups safely. A Form gives free
 - Echo-rumor guard: if the headline uses rumor wording (leak, reportedly, allegedly, sources say...), 2+ outlets earn "Reported, not confirmed" instead of "Confirmed". Many outlets repeating one leak is still not confirmation.
 - Result on real examples: a loose topical story went from 11 outlets to 2; a widely covered model launch stayed at 18.
 
+## Step 13. Let people choose any topic, not just tech
+- Problem: Topics was a required checkbox list, and the topic list leaned toward tech. People should be able to tick topics, type their own, or both, on any subject.
+- Google Form: switched the Topics question's Required toggle off, so the Form no longer forces a tick.
+- Signup page (`docs/index.html`): added 12 non-tech topic chips and a free-text box. On submit, ticked and typed topics are merged into one comma-separated list and sent through the Form's "Other" answer. Because "Other" accepts any text, the Form never rejects a topic it has not heard of. The page asks for at least one topic, ticked or typed.
+- Job (`runner.py`): added keyword lists for the new topics and raised the per-person topic searches from 6 to 8. A typed topic that is not in the list is searched directly and weighted higher.
+- Nothing else changed: the Sheet, its CSV link, the secrets and the schedule stay the same.
+- Test: submitted a signup with typed topics only. It reached the Sheet as expected. A dry run of the whole job against the live Sheet produced a brief for every subscriber.
+- Limit found: very niche topics (for example "QA Testing") pull in some off-topic stories, because the news search has little to match on.
+
 ## Known limits
 - Same-story matching is a headline-word heuristic, not full understanding of the claim, so it can still miss or over-match in edge cases.
 - Gmail app passwords cap sending (about 500 emails a day), so this suits tens to low hundreds of subscribers.
