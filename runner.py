@@ -47,6 +47,18 @@ TOPICS = {
     "Finance & markets": ["stocks", "earnings", "Federal Reserve", "inflation", "interest rates", "fintech", "markets"],
     "Healthcare & biotech": ["healthcare", "biotech", "FDA", "clinical trial", "medical AI", "drug approval"],
     "Design & UX": ["UX", "UI design", "Figma", "design system", "accessibility", "user experience"],
+    "Sports": ["match", "league", "championship", "tournament", "coach", "NBA", "NFL", "cricket", "football", "soccer"],
+    "Entertainment & movies": ["movie", "film", "box office", "series", "streaming", "Netflix", "album", "festival", "celebrity"],
+    "Travel": ["travel", "flights", "airline", "airport", "hotel", "visa", "tourism", "destination"],
+    "Food & cooking": ["recipe", "restaurant", "chef", "food", "cooking", "nutrition"],
+    "Science & space": ["NASA", "space", "telescope", "physics", "research study", "astronomy", "discovery"],
+    "World news & politics": ["election", "government", "parliament", "president", "sanctions", "summit", "policy", "treaty"],
+    "Health & fitness": ["fitness", "workout", "diet", "mental health", "sleep", "wellness", "study finds"],
+    "Education": ["university", "school", "students", "scholarship", "curriculum", "exam", "admissions"],
+    "Real estate": ["housing", "mortgage", "real estate", "rent", "home prices", "property"],
+    "Climate & environment": ["climate", "emissions", "renewable", "solar", "wildfire", "sustainability"],
+    "Automotive & EVs": ["electric vehicle", "EV", "Tesla", "car", "battery", "autonomous driving"],
+    "Gaming": ["game", "gaming", "PlayStation", "Xbox", "Nintendo", "esports", "Steam"],
     "Marketing & growth": ["marketing", "SEO", "growth", "advertising", "brand", "social media", "content marketing"],
 }
 STOP = set("a an and the of for to in at on with senior junior lead principal staff associate jr sr i ii iii".split())
@@ -170,7 +182,7 @@ def candidates_for(sub, pool, since, now, official, sent_urls):
     queries = []
     if sub["job"]:
         queries += [sub["job"] + " news", sub["job"] + " hiring OR skills OR salary"]
-    queries += [t for t in sub["topics"]][:6]
+    queries += [t for t in sub["topics"]][:8]
     for q in queries:
         items += google_news(q)
     kws = [(collect.kw_regex(k), w) for k, w in keywords_for(sub)]
@@ -274,7 +286,7 @@ def write_brief(sub, cands):
         "For each pick write ONE plain-English sentence (max 30 words) on what happened, and, only if obvious, a short 'why it matters' (max 15 words) for their role. "
         "Do not invent facts beyond the headline and snippet. No em dashes.\n"
         "Return JSON: {\"intro\": \"one friendly sentence\", \"items\": [{\"id\": number, \"what\": string, \"why\": string}]}\n\n"
-        "STORIES:\n%s" % (sub["name"] or "a reader", sub["job"] or "general", ", ".join(sub["topics"]) or "general tech",
+        "STORIES:\n%s" % (sub["name"] or "a reader", sub["job"] or "general", ", ".join(sub["topics"]) or "general news",
                           MAX_ITEMS, "\n".join(lines)))
     res = gemini(prompt)
     picks = []
