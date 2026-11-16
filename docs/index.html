@@ -17,8 +17,8 @@ button{margin-top:22px;width:100%;padding:13px;border:0;border-radius:9px;backgr
 .small{font-size:13px;color:#667;margin-top:14px;line-height:1.45}
 #done{display:none;background:#e8f7ee;border:1px solid #9bd5b0;border-radius:12px;padding:20px;margin-top:16px;font-size:16px}
 </style></head><body><main>
-<h1>Morning Brief</h1>
-<p class="lead">Tell us your job title and the topics you care about. Every morning you get a short email with the news that matters to you, and each story is labeled so you know how well it is confirmed.</p>
+<h1 id="top">Morning Brief</h1>
+<p class="lead" id="lead">Tell us your job title and the topics you care about. Every morning you get a short email with the news that matters to you, and each story is labeled so you know how well it is confirmed.</p>
 <form id="f" action="https://docs.google.com/forms/d/e/1FAIpQLSc3eJNqzdBS8SQ48b4evId-FtWco3Ukrt9yJTBDBNZS2FidCw/formResponse" method="POST" target="hidden_iframe">
 <label class="f" for="n">Your name</label><input id="n" type="text" name="entry.1439940062" required>
 <label class="f" for="e">Email</label><input id="e" type="email" name="entry.1633401173" required>
@@ -59,7 +59,7 @@ button{margin-top:22px;width:100%;padding:13px;border:0;border-radius:9px;backgr
 <button type="submit">Send me the brief</button>
 <p class="small">Use the same form again any time to change your title or topics (your newest answer replaces the old one) or to unsubscribe. Your email is stored privately and used only to send the brief.</p>
 </form>
-<div id="done">You are in. Your first brief arrives with the next morning run. Check your spam folder once and mark it as not spam.</div>
+<div id="done"><strong>Thank you for signing up! 🎉</strong><br>We are glad to have you. Your first brief will land in your inbox with the next morning run. If you do not see it, check your spam folder once and mark it as not spam. Enjoy your mornings!</div>
 <iframe name="hidden_iframe" style="display:none"></iframe>
 </main>
 <script>
@@ -73,6 +73,6 @@ f.addEventListener('submit',function(ev){
   f.querySelectorAll('.dyn').forEach(x=>x.remove());
   for(const [k,v] of [['entry.215467201','__other_option__'],['entry.215467201.other_option_response',all.join(', ')]]){
     const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;i.className='dyn';f.appendChild(i);}
-  setTimeout(()=>{f.style.display='none';done.style.display='block';},700);
+  setTimeout(()=>{f.style.display='none';document.getElementById('top').style.display='none';document.getElementById('lead').style.display='none';done.style.display='block';},700);
 });
 </script></body></html>
