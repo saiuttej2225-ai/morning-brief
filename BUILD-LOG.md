@@ -83,7 +83,16 @@ Why: GitHub Pages is static, so it can't store signups safely. A Form gives free
 - Test: submitted a signup with typed topics only. It reached the Sheet as expected. A dry run of the whole job against the live Sheet produced a brief for every subscriber.
 - Limit found: very niche topics (for example "QA Testing") pull in some off-topic stories, because the news search has little to match on.
 
+## Step 14. The brief arrived hours late (scheduled jobs are not exact)
+- Problem: the brief was set for 7 AM New York (cron `0 12 * * *`, which is 12:00 UTC) but did not arrive on time.
+- How I diagnosed it: Actions tab -> Daily brief. All scheduled runs were green, so the job itself worked. The run list showed they started at 12:28 PM and 1:12 PM New York, 5 to 6 hours after the scheduled time, and one day had not started at all by midday.
+- Cause: GitHub only promises that a scheduled run starts at some point after its time. Busy slots, especially exactly on the hour, get queued and delayed.
+- Fix: moved the schedule to 10:47 UTC (5:47 AM New York): earlier, so a delay still lands in the morning, and on an odd minute away from the busy top of the hour. Also ran that day's brief by hand from the Actions tab (Run workflow).
+- Check: after committing, compared the file on GitHub with my local copy to confirm they match. The next scheduled run's start time will show whether the fix worked.
+- Lesson: judge a scheduled job by when it actually started, not when it was scheduled. If delays continue, the fallback is an external timer that calls GitHub at an exact time, which needs a personal access token.
+
 ## Known limits
 - Same-story matching is a headline-word heuristic, not full understanding of the claim, so it can still miss or over-match in edge cases.
 - Gmail app passwords cap sending (about 500 emails a day), so this suits tens to low hundreds of subscribers.
+- GitHub scheduled runs can start hours late, so the brief time is approximate (see Step 14).
 - Gemini free tier has rate limits; the runner waits and retries, and falls back to plain snippets.
