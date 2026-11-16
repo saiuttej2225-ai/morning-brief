@@ -2,7 +2,7 @@ name: Daily brief
 
 on:
   schedule:
-    - cron: "0 12 * * *"   # 12:00 UTC = 7 AM New York (8 AM in summer time)
+    - cron: "47 10 * * *"  # 10:47 UTC = 5:47 AM New York. Early and off the busy top of the hour, because GitHub often starts scheduled runs hours late
   workflow_dispatch: {}      # lets you run it by hand from the Actions tab
 
 permissions:
