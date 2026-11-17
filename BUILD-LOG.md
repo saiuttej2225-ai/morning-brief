@@ -91,8 +91,27 @@ Why: GitHub Pages is static, so it can't store signups safely. A Form gives free
 - Check: after committing, compared the file on GitHub with my local copy to confirm they match. The next scheduled run's start time will show whether the fix worked.
 - Lesson: judge a scheduled job by when it actually started, not when it was scheduled. If delays continue, the fallback is an external timer that calls GitHub at an exact time, which needs a personal access token.
 
+## Step 15. A friendlier thank-you after signing up
+- Problem: after someone submitted the Form, the page still showed the title "Morning Brief" and the "tell us your job title" text above the confirmation, which read oddly once they were done.
+- Fix (`docs/index.html`): on submit, the page now hides the title and intro paragraph and shows a short thank-you message in their place.
+- Check: after committing, the live page was fetched and contained the new message.
+
+## Step 16. A run failed because I edited the repo while it ran (incident, root cause, fix)
+- Problem: the manual run on Nov 16 showed a red X.
+- How I diagnosed it: Actions -> the failed run -> the `send` job -> open the red step. The steps that build and send the brief were green. Only the last step, "Save what was sent", failed with "rejected, fetch first".
+- Cause: that step saves the sent-stories log back to the repo. I committed the thank-you page while the run was in progress, so the repo had moved on and the push was refused. The emails had already gone out, but that run's log was not saved, so a story could repeat.
+- Fix (`.github/workflows/daily-brief.yml`): the save step now pulls the latest changes first and retries the push up to 3 times.
+- Lesson: jobs that write back to the repo can collide with human edits. Make them retry, and avoid editing the repo during a run.
+
+## Step 17. An outside timer, because GitHub's schedule was unreliable
+- Problem: even after moving the cron time earlier (Step 14), the 5:47 AM run had not started by 10 AM. GitHub gives no promise about when a scheduled run starts.
+- Fix: a free cron-job.org job calls GitHub's workflow API (POST `/repos/OWNER/REPO/actions/workflows/daily-brief.yml/dispatches` with body `{"ref":"main"}`) every day at 6:00 AM New York time. It authenticates with a fine-grained personal access token limited to this one repo, with only the Actions read/write permission, expiring in a year.
+- Test: the job's "Test run" returned 204 (accepted) and a new run appeared in the Actions tab within seconds.
+- Cleanup: removed the `schedule:` block from the workflow so GitHub's late run does not send a second brief. The workflow now only starts from the outside timer or by hand.
+- Limits: the token expires on Nov 17, 2027 and must be replaced then. cron-job.org is a third-party service; if it fails, run the workflow by hand.
+
 ## Known limits
 - Same-story matching is a headline-word heuristic, not full understanding of the claim, so it can still miss or over-match in edge cases.
 - Gmail app passwords cap sending (about 500 emails a day), so this suits tens to low hundreds of subscribers.
-- GitHub scheduled runs can start hours late, so the brief time is approximate (see Step 14).
+- GitHub scheduled runs can start hours late, so the brief is started by an outside timer instead (see Steps 14 and 17). The timer token expires Nov 17, 2027.
 - Gemini free tier has rate limits; the runner waits and retries, and falls back to plain snippets.
