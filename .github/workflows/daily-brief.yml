@@ -1,9 +1,9 @@
 name: Daily brief
 
 on:
-  schedule:
-    - cron: "47 10 * * *"  # 10:47 UTC = 5:47 AM New York. Early and off the busy top of the hour, because GitHub often starts scheduled runs hours late
-  workflow_dispatch: {}      # lets you run it by hand from the Actions tab
+  # No schedule here on purpose. GitHub's own scheduler started runs hours late,
+  # so cron-job.org calls this workflow at 6:00 AM New York every day instead.
+  workflow_dispatch: {}      # used by the outside timer, and by hand from the Actions tab
 
 permissions:
   contents: write
@@ -34,4 +34,10 @@ jobs:
           git config user.name "brief-bot"
           git config user.email "brief-bot@users.noreply.github.com"
           git add state
-          git diff --cached --quiet || (git commit -m "Update sent log" && git push)
+          if ! git diff --cached --quiet; then
+            git commit -m "Update sent log"
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push && break
+              sleep 5
+            done
+          fi
