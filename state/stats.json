@@ -54,5 +54,12 @@
   "sent": 5,
   "failed": 0,
   "items": 50
+ },
+ {
+  "date": "2026-11-21",
+  "subscribers": 6,
+  "sent": 6,
+  "failed": 0,
+  "items": 60
  }
 ]
